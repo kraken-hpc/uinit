@@ -1,0 +1,9 @@
+---
+- name: Say hi
+  module: echo
+  args:
+    text: "Hi"
+- name: Run ls
+  module: command
+  args:
+    cmd: ls -al
