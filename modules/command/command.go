@@ -53,7 +53,7 @@ func (*Command) Run(ctx *uinit.ModuleContext, iargs interface{}) (err error) {
 	}
 
 	if args.Exec {
-		return syscall.Exec(cmdPath, cmdArgv[1:], os.Environ())
+		return syscall.Exec(cmdPath, cmdArgv, os.Environ())
 	}
 
 	c := exec.Command(cmdPath, cmdArgv[1:]...)
@@ -78,6 +78,17 @@ func (*Command) Args() interface{} {
 //Split strings on spaces except when a space is within a quoted, bracketed, or braced string.
 //Supports nesting multiple brackets or braces.
 func split(s string) []string {
+	// func that ranges across the provided map[rune]int returning true if any
+	// values are greater than the provided int.
+	mapGt := func(runes map[rune]int, g int) bool {
+		for _, i := range runes {
+			if i > g {
+				return true
+			}
+		}
+		return false
+	}
+
 	lastRune := map[rune]int{}
 	f := func(c rune) bool {
 		switch {
@@ -93,21 +104,11 @@ func split(s string) []string {
 		case c == '{':
 			lastRune['}']++
 			return false
-		case mapGreaterThan(lastRune, 0):
+		case mapGt(lastRune, 0):
 			return false
 		default:
 			return c == ' '
 		}
 	}
 	return strings.FieldsFunc(s, f)
-}
-
-// mapGreaterThan ranges across the provided map[rune]int looking for any values greater than
-func mapGreaterThan(runes map[rune]int, g int) bool {
-	for _, i := range runes {
-		if i > g {
-			return true
-		}
-	}
-	return false
 }
