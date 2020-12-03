@@ -12,6 +12,14 @@
   module: echo
   args:
     text: "Foo = {{.foo}}"
+- name: Read vars from cmdline.text
+  module: cmdline
+  args:
+    filename: ../../modules/cmdline/cmdline.txt
+- name: Verify that key = value
+  module: echo
+  args:
+    text: "key = {{.key}}"
 - name: Run ls
   module: command
   args:

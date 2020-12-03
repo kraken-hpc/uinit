@@ -1,0 +1,1 @@
+BOOT_IMAGE=(hd0,msdos1)/boot/vmlinuz-4.18.0-80.el8.x86_64 root=UUID=d5f5b677-6350-416d-b1d3-47d723d94d88 ro no_timer_check console=tty0 console=ttyS0,115200n8 net.ifnames=0 biosdevname=0 elevator=noop uinit.bool uinit.empty= uinit.key=value uinit.quote="once upon a time"

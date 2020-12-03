@@ -108,8 +108,6 @@ func main() {
 		Log:  log.New(logFile, "uinit: ", log.Lmsgprefix|log.Ltime|log.Ldate),
 	}
 
-	ctx.Vars.Set("foo", "bar")
-
 	succeed := 0
 	total := len(script)
 	ctx.Log.Printf("starting uinit script with %d tasks...", total)
