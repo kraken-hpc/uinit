@@ -12,3 +12,4 @@
   args:
     cmd: ls -l
     shell: true
+    exec: true
