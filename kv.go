@@ -49,3 +49,8 @@ func (kv *SimpleKV) Clear() (err error) {
 	kv.Init()
 	return
 }
+
+// GetMap returns a map that can be used for templating
+func (kv *SimpleKV) GetMap() map[string]string {
+	return kv.store
+}

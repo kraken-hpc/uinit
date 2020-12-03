@@ -9,6 +9,7 @@ type KeyValue interface {
 	Get(string) (string, error)
 	GetDefault(string, string) string
 	Clear() error
+	GetMap() map[string]string
 }
 
 // ModuleContext gets passed to modules when they Run

@@ -1,14 +1,14 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
+	"text/template"
 
 	"github.com/jlowellwofford/uinit"
-	"github.com/jlowellwofford/uinit/modules/command"
-	"github.com/jlowellwofford/uinit/modules/echo"
 
 	"gopkg.in/yaml.v3"
 )
@@ -32,12 +32,38 @@ type task struct {
 	Args   yaml.Node
 }
 
-func run(ctx *uinit.ModuleContext, m string, a yaml.Node) (err error) {
+// templateNode this is recursive
+func templateNode(ctx *uinit.ModuleContext, a *yaml.Node) (err error) {
+	// too hacky depend on this string never changing?
+	if a.ShortTag() == "!!str" {
+		c := a.Content
+		t := template.Must(template.New("vars").Parse(a.Value)) // we could probably find a clever way to reuse this
+		w := bytes.NewBuffer([]byte{})
+		if err = t.Execute(w, ctx.Vars.GetMap()); err != nil {
+			return fmt.Errorf("failed to template value: %s: %v", a.Value, err)
+		}
+		if err = a.Encode(w.String()); err != nil {
+			return fmt.Errorf("failed to (re)encode value: %v", err)
+		}
+		a.Content = c
+	}
+	for _, n := range a.Content {
+		templateNode(ctx, n)
+	}
+	return
+}
+
+func run(ctx *uinit.ModuleContext, m string, a *yaml.Node) (err error) {
 	var mod uinit.Module
 	var ok bool
 	if mod, ok = modules[m]; !ok {
 		return fmt.Errorf("no module by the name of: %s", m)
 	}
+
+	if err = templateNode(ctx, a); err != nil {
+		return fmt.Errorf("failed templating arguments: %v", err)
+	}
+
 	args := mod.Args()
 	if err = a.Decode(args); err != nil {
 		return fmt.Errorf("failed to parse arguments: %v", err)
@@ -49,8 +75,6 @@ func run(ctx *uinit.ModuleContext, m string, a yaml.Node) (err error) {
 	return
 }
 
-var modules map[string]uinit.Module
-
 func main() {
 	if len(os.Args) > 2 {
 		usage()
@@ -59,10 +83,6 @@ func main() {
 	if len(os.Args) == 2 {
 		config.scriptFile = os.Args[1]
 	}
-
-	modules = make(map[string]uinit.Module)
-	modules["echo"] = &echo.Echo{}
-	modules["command"] = &command.Command{}
 
 	log.SetPrefix("uinit: ")
 	log.SetFlags(log.Lmsgprefix | log.Ltime | log.Ldate)
@@ -88,12 +108,14 @@ func main() {
 		Log:  log.New(logFile, "uinit: ", log.Lmsgprefix|log.Ltime|log.Ldate),
 	}
 
+	ctx.Vars.Set("foo", "bar")
+
 	succeed := 0
 	total := len(script)
 	ctx.Log.Printf("starting uinit script with %d tasks...", total)
 	for i, t := range script {
 		ctx.Log.Printf("(%d/%d) task: %s: %s", i+1, total, t.Module, t.Name)
-		if err = run(ctx, t.Module, t.Args); err != nil {
+		if err = run(ctx, t.Module, &t.Args); err != nil {
 			ctx.Log.Printf("(%d/%d) task failed: %v", i+1, total, err)
 		} else {
 			ctx.Log.Printf("(%d/%d) task succeed.", i+1, total)

@@ -3,6 +3,15 @@
   module: echo
   args:
     text: "Hi"
+- name: Set foo = bar
+  module: setvar
+  args:
+    key: foo
+    value: bar
+- name: Echo with a variable
+  module: echo
+  args:
+    text: "Foo = {{.foo}}"
 - name: Run ls
   module: command
   args:
