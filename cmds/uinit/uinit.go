@@ -9,6 +9,7 @@ import (
 	"github.com/jlowellwofford/uinit"
 	"github.com/jlowellwofford/uinit/modules/command"
 	"github.com/jlowellwofford/uinit/modules/echo"
+
 	"gopkg.in/yaml.v3"
 )
 
