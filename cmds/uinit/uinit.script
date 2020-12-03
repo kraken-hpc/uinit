@@ -7,3 +7,8 @@
   module: command
   args:
     cmd: ls -al
+- name: Run ls via shell
+  module: command
+  args:
+    cmd: ls -l
+    shell: true
