@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"strings"
 	"syscall"
-	"unicode"
 
 	"github.com/jlowellwofford/uinit"
 )
@@ -46,7 +44,7 @@ func (*Command) Run(ctx *uinit.ModuleContext, iargs interface{}) (err error) {
 		cmdArgv = append(shell, args.Cmd)
 		cmdPath = cmdArgv[0]
 	} else {
-		cmdArgv = split(args.Cmd)
+		cmdArgv = uinit.SplitCommandLine(args.Cmd)
 		if cmdPath, err = exec.LookPath(cmdArgv[0]); err != nil {
 			return fmt.Errorf("command not found: %s", cmdArgv[0])
 		}
@@ -73,42 +71,4 @@ func (*Command) Run(ctx *uinit.ModuleContext, iargs interface{}) (err error) {
 // Args returns a struct pointer describing our module's argument structure
 func (*Command) Args() interface{} {
 	return &Args{}
-}
-
-//Split strings on spaces except when a space is within a quoted, bracketed, or braced string.
-//Supports nesting multiple brackets or braces.
-func split(s string) []string {
-	// func that ranges across the provided map[rune]int returning true if any
-	// values are greater than the provided int.
-	mapGt := func(runes map[rune]int, g int) bool {
-		for _, i := range runes {
-			if i > g {
-				return true
-			}
-		}
-		return false
-	}
-
-	lastRune := map[rune]int{}
-	f := func(c rune) bool {
-		switch {
-		case lastRune[c] > 0:
-			lastRune[c]--
-			return false
-		case unicode.In(c, unicode.Quotation_Mark):
-			lastRune[c]++
-			return false
-		case c == '[':
-			lastRune[']']++
-			return false
-		case c == '{':
-			lastRune['}']++
-			return false
-		case mapGt(lastRune, 0):
-			return false
-		default:
-			return c == ' '
-		}
-	}
-	return strings.FieldsFunc(s, f)
 }
