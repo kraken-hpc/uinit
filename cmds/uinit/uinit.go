@@ -98,7 +98,7 @@ func main() {
 	}
 
 	log.Printf("using log file: %s", config.logFile)
-	logFile, err := os.OpenFile(config.logFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0700)
+	logFile, err := os.OpenFile(config.logFile, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0600)
 	if err != nil {
 		log.Fatalf("failed to open log file: %v", err)
 	}

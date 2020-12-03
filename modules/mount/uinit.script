@@ -1,0 +1,19 @@
+---
+- name: "Make mount src/dest"
+  module: command
+  args:
+    cmd: mkdir mntsrc mntdest
+    shell: true
+- name: "Create a file in src"
+  module: command
+  args:
+    cmd: touch mntsrc/file
+    shell: true
+- name: "Bind mount src to test"
+  module: mount
+  args:
+    src: mntsrc
+    dest: mntdest
+    type: bind
+    opts:
+      - bind

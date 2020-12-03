@@ -5,6 +5,7 @@ import (
 	"github.com/jlowellwofford/uinit/modules/cmdline"
 	"github.com/jlowellwofford/uinit/modules/command"
 	"github.com/jlowellwofford/uinit/modules/echo"
+	"github.com/jlowellwofford/uinit/modules/mount"
 	"github.com/jlowellwofford/uinit/modules/setvar"
 )
 
@@ -13,4 +14,5 @@ var modules = map[string]uinit.Module{
 	"setvar":  &setvar.SetVar{},
 	"command": &command.Command{},
 	"cmdline": &cmdline.CmdLine{},
+	"mount":   &mount.Mount{},
 }
