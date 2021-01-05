@@ -39,7 +39,7 @@ func SplitCommandLine(s string) []string {
 		case mapGt(lastRune, 0):
 			return false
 		default:
-			return c == ' '
+			return c == ' ' || c == '\n' || c == '\t'
 		}
 	}
 	return strings.FieldsFunc(s, f)
