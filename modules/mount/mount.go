@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/bensallen/rbd/pkg/mount"
-	"github.com/jlowellwofford/uinit"
+	"github.com/kraken-hpc/uinit"
 )
 
 var _ uinit.Module = (*Mount)(nil)

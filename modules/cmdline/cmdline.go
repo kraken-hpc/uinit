@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"regexp"
 
-	"github.com/jlowellwofford/uinit"
+	"github.com/kraken-hpc/uinit"
 )
 
 var _ uinit.Module = (*CmdLine)(nil)

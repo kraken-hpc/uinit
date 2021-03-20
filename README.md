@@ -24,7 +24,7 @@ For more details on modules, see the example scripts, or look for `README.md` fi
 
 # Building/using
 
-1. `go get -u github.com/jlowellwofford/uinit/cmds/uinit`
+1. `go get -u github.com/kraken-hpc/uinit/cmds/uinit`
    This will build `uinit` and place it in `$GOPATH/bin`.
 2. Write a script (see example `*.script` files)
 3. Run it, and either name the script `./uinit.script`, or pass it as a commandline argument.
@@ -32,7 +32,7 @@ For more details on modules, see the example scripts, or look for `README.md` fi
 # Building into u-root
 
 You can build uinit directly into [u-root](https://github.com/u-root/u-root) by adding the following commandline options to your u-root build:
-`-uinitcmd /bbin/uinit github.com/jlowellwofford/uinit/cmds/uinit`
+`-uinitcmd /bbin/uinit github.com/kraken-hpc/uinit/cmds/uinit`
 Then make sure that you have a `uinit.script` in the root of your `base` cpio.
 
 If you intend to boot something with `systemd`out of this, you'll want to:

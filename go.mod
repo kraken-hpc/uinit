@@ -1,4 +1,4 @@
-module github.com/jlowellwofford/uinit
+module github.com/kraken-hpc/uinit
 
 go 1.15
 

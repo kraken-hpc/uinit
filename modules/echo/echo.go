@@ -3,7 +3,7 @@ package echo
 import (
 	"fmt"
 
-	"github.com/jlowellwofford/uinit"
+	"github.com/kraken-hpc/uinit"
 )
 
 var _ uinit.Module = (*Echo)(nil)

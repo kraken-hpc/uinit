@@ -3,7 +3,7 @@ package setvar
 import (
 	"fmt"
 
-	"github.com/jlowellwofford/uinit"
+	"github.com/kraken-hpc/uinit"
 )
 
 var _ uinit.Module = (*SetVar)(nil)

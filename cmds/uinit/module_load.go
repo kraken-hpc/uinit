@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/jlowellwofford/uinit"
-	"github.com/jlowellwofford/uinit/modules/cmdline"
-	"github.com/jlowellwofford/uinit/modules/command"
-	"github.com/jlowellwofford/uinit/modules/echo"
-	"github.com/jlowellwofford/uinit/modules/mount"
-	"github.com/jlowellwofford/uinit/modules/setvar"
+	"github.com/kraken-hpc/uinit"
+	"github.com/kraken-hpc/uinit/modules/cmdline"
+	"github.com/kraken-hpc/uinit/modules/command"
+	"github.com/kraken-hpc/uinit/modules/echo"
+	"github.com/kraken-hpc/uinit/modules/mount"
+	"github.com/kraken-hpc/uinit/modules/setvar"
 )
 
 var modules = map[string]uinit.Module{

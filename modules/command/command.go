@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"syscall"
 
-	"github.com/jlowellwofford/uinit"
+	"github.com/kraken-hpc/uinit"
 )
 
 var _ uinit.Module = (*Command)(nil)

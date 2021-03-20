@@ -8,7 +8,7 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/jlowellwofford/uinit"
+	"github.com/kraken-hpc/uinit"
 
 	"gopkg.in/yaml.v3"
 )
