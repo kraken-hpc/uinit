@@ -24,6 +24,25 @@
   module: command
   args:
     cmd: ls -al
+- name: uh....
+  module: echo
+  args:
+    text: "what's up?"
+- name: Test environment variables
+  module: command
+  args:
+    cmd: ls -ld $LS_DIR
+    shell: true
+    env:
+      "LS_DIR": "/tmp"
+- name: Loop test
+  module: echo
+  args:
+    text: "this is item {{.item}}"
+  loop:
+    - "a"
+    - "b"
+    - "c"
 - name: Run ls via shell
   module: command
   args:

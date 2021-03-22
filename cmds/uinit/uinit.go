@@ -8,6 +8,7 @@ import (
 	"os"
 	"text/template"
 
+	"github.com/jinzhu/copier"
 	"github.com/kraken-hpc/uinit"
 
 	"gopkg.in/yaml.v3"
@@ -30,6 +31,7 @@ type task struct {
 	Name   string
 	Module string
 	Args   yaml.Node
+	Loop   []string
 }
 
 // templateNode this is recursive
@@ -112,12 +114,24 @@ func main() {
 	total := len(script)
 	ctx.Log.Printf("starting uinit script with %d tasks...", total)
 	for i, t := range script {
+		if t.Loop == nil {
+			t.Loop = []string{""}
+		}
 		ctx.Log.Printf("(%d/%d) task: %s: %s", i+1, total, t.Module, t.Name)
-		if err = run(ctx, t.Module, &t.Args); err != nil {
-			ctx.Log.Printf("(%d/%d) task failed: %v", i+1, total, err)
-		} else {
-			ctx.Log.Printf("(%d/%d) task succeed.", i+1, total)
-			succeed++
+		for _, item := range t.Loop {
+			if item != "" {
+				ctx.Log.Printf("(item: %s)", item)
+			}
+			ctx.Vars.Set("item", item)
+			// we have to copy, otherwise we overwrite our template
+			args := &yaml.Node{}
+			copier.CopyWithOption(args, &t.Args, copier.Option{DeepCopy: true})
+			if err = run(ctx, t.Module, args); err != nil {
+				ctx.Log.Printf("(%d/%d) task failed: %v", i+1, total, err)
+			} else {
+				ctx.Log.Printf("(%d/%d) task succeed.", i+1, total)
+				succeed++
+			}
 		}
 	}
 	ctx.Log.Printf("(%d/%d) tasks succeeded.  Script finished.  Exiting.", succeed, len(script))
