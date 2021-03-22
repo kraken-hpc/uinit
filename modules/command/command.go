@@ -22,6 +22,7 @@ type Args struct {
 	Background bool
 	Exec       bool
 	Shell      bool
+	Env        map[string]string
 }
 
 // Run the module
@@ -55,6 +56,11 @@ func (*Command) Run(ctx *uinit.ModuleContext, iargs interface{}) (err error) {
 	}
 
 	c := exec.Command(cmdPath, cmdArgv[1:]...)
+	if args.Env != nil {
+		for k, v := range args.Env {
+			c.Env = append(c.Env, fmt.Sprintf("%s=%s", k, v))
+		}
+	}
 	if args.Background {
 		c.Stdout = ctx.Log.Writer()
 		c.Stderr = ctx.Log.Writer()
