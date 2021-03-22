@@ -2,8 +2,10 @@ package command
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"syscall"
 
 	"github.com/kraken-hpc/uinit"
@@ -23,6 +25,16 @@ type Args struct {
 	Exec       bool
 	Shell      bool
 	Env        map[string]string
+}
+
+type logWriter struct {
+	*log.Logger
+}
+
+func (lw *logWriter) Write(p []byte) (n int, err error) {
+	n = len(p)
+	lw.Println(string(p))
+	return
 }
 
 // Run the module
@@ -61,16 +73,15 @@ func (*Command) Run(ctx *uinit.ModuleContext, iargs interface{}) (err error) {
 			c.Env = append(c.Env, fmt.Sprintf("%s=%s", k, v))
 		}
 	}
+	ctx.Log.SetPrefix(filepath.Base(cmdArgv[0]) + ": ")
+	c.Stdout = &logWriter{ctx.Log}
+	c.Stderr = &logWriter{ctx.Log}
 	if args.Background {
-		c.Stdout = ctx.Log.Writer()
-		c.Stderr = ctx.Log.Writer()
 		c.Stdin = nil
 		return c.Start()
 	}
 
 	c.Stdin = os.Stdin
-	c.Stdout = os.Stdout
-	c.Stderr = os.Stderr
 	return c.Run()
 }
 

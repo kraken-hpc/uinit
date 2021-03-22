@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"os"
@@ -107,7 +108,7 @@ func main() {
 
 	ctx := &uinit.ModuleContext{
 		Vars: uinit.NewSimpleKV(),
-		Log:  log.New(logFile, "uinit: ", log.Lmsgprefix|log.Ltime|log.Ldate),
+		Log:  log.New(io.MultiWriter(os.Stdout, logFile), "uinit: ", log.Lmsgprefix|log.Ltime|log.Ldate),
 	}
 
 	succeed := 0
