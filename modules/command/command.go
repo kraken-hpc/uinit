@@ -74,13 +74,15 @@ func (*Command) Run(ctx *uinit.ModuleContext, iargs interface{}) (err error) {
 		}
 	}
 	ctx.Log.SetPrefix(filepath.Base(cmdArgv[0]) + ": ")
-	c.Stdout = &logWriter{ctx.Log}
-	c.Stderr = &logWriter{ctx.Log}
 	if args.Background {
+		c.Stdout = &logWriter{ctx.Log}
+		c.Stderr = &logWriter{ctx.Log}
 		c.Stdin = nil
 		return c.Start()
 	}
 
+	c.Stdout = os.Stdout
+	c.Stderr = os.Stderr
 	c.Stdin = os.Stdin
 	return c.Run()
 }
