@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"os"
 	"text/template"
 
 	"github.com/jinzhu/copier"
@@ -81,7 +82,7 @@ type Script struct {
 // If logger == nil, log.Default() will be used.
 func NewScript(data []byte, logger *log.Logger) (s *Script, err error) {
 	if logger == nil {
-		logger = log.Default()
+		logger = log.New(os.Stdout, "", 0)
 	}
 	s = &Script{
 		Context: &ModuleContext{
