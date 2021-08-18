@@ -1,0 +1,5 @@
+---
+- name: Hello from subscript.script
+  module: echo
+  args:
+    text: "I'm the subscript"
