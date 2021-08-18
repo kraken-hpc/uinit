@@ -15,6 +15,10 @@ import (
 var Modules = map[string]Module{}
 
 // A Task is an individual Script item
+// Each task should have at least a Name and Module
+// Most tasks will have Args in a structure defined by the module
+// A task can be executed in a loop if `Loop` is provided, in which case
+// the Args will be templated with {{item}} = current loop value.
 type Task struct {
 	Name   string
 	Module string
@@ -22,7 +26,7 @@ type Task struct {
 	Loop   []string
 }
 
-// templateNode this is recursive
+// templateNode is used internally to template key/value variables into arguments
 func (t *Task) templateNode(ctx *ModuleContext, a *yaml.Node) (err error) {
 	// too hacky depend on this string never changing?
 	if a.ShortTag() == "!!str" {
@@ -67,11 +71,14 @@ func (t *Task) Run(ctx *ModuleContext) (err error) {
 }
 
 // A Script object represents a runnable uinit script
+// A properly initialized scripted can be executed with Run()
 type Script struct {
 	Context *ModuleContext
 	Tasks   []Task
 }
 
+// NewScript will parse a YAML-formatted documented encoded in `data`
+// If logger == nil, log.Default() will be used.
 func NewScript(data []byte, logger *log.Logger) (s *Script, err error) {
 	if logger == nil {
 		logger = log.Default()
@@ -89,6 +96,9 @@ func NewScript(data []byte, logger *log.Logger) (s *Script, err error) {
 	return
 }
 
+// NewScriptFromFile will attempt to read and parse a YAML script in `file` and
+// return a Script object.
+// If logger == nil, log.Default() will be used.
 func NewScriptFromFile(file string, logger *log.Logger) (s *Script, err error) {
 	var data []byte
 	if data, err = ioutil.ReadFile(file); err != nil {
@@ -114,6 +124,8 @@ func (s *Script) Validate() (err error) {
 	return
 }
 
+// Run will execute all of the tasks in the specified script.
+// It will print progress messages to the script's Logger
 func (s *Script) Run() (err error) {
 	if err = s.Validate(); err != nil {
 		return err
