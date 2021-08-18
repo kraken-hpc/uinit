@@ -43,7 +43,28 @@
     - "a"
     - "b"
     - "c"
-- name: Run ls via shell
+- name: Run sub-script with one task
+  module: script
+  args:
+    tasks:
+      - name: Echo something in a the subscript
+        module: echo
+        args:
+          text: "something"
+- name: Run sub-script from file
+  module: script
+  args:
+    file: subscript.script
+- name: Run a sub-script from file plus an extra task
+  module: script
+  args:
+    file: subscript.script
+    tasks:
+      - name: This is the extra task
+        module: echo
+        args:
+          text: "extra task..."
+- name: Run ls via shell (exec)
   module: command
   args:
     cmd: ls -l
